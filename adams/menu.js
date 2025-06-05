@@ -22,25 +22,16 @@ const footer = `\n\n©Sir Ibrahim Adams\n\n╭━========================\n┃  
 
 // Command categories
 const categories = {
-    "🤖 AI MENU": ["ABU"],
-    "🎵 AUTO EDIT MENU": ["AUDIO-EDIT"],
-    "📥 DOWNLOAD MENU": ["BMW PICS", "SEARCH", "DOWNLOAD"],
-    "🛠️ CONTROL MENU": ["CONTROL", "STICKCMD", "TOOLS"],
-    "💬 CONVERSATION MENU": ["CONVERSION", "MPESA"],
-    "😂 FUN MENU": ["HENTAI", "FUN", "REACTION"],
-    "🎮 GAMES MENU": ["GAMES"],
-    "🌍 GENERAL MENU": ["GENERAL"],
-    "👨‍👨‍👦‍👦 GROUP MENU": ["GROUP"],
-    "💻 GITHUB MENU": ["GITHUB"],
-    "🖼️ IMAGE MENU": ["IMAGE-EDIT"],
-    "🔤 LOGO MENU": ["LOGO"],
-    "🛑 MODS MENU": ["MODS"],
-    "📰 NEWS MENU": ["NEWS", "AI"],
-    "🔗 CONNECTOR MENU": ["PAIR", "USER"],
-    "🔍 SEARCH MENU": ["NEWS", "IA"],
-    "🗣️ TTS MENU": ["TTS"],
-    "⚙️ UTILITY MENU": ["UTILITY"],
-    "🎌 ANIME MENU": ["WEEB"]
+    "🤖 AI MENU": ["AI", "TTS", "NEWS"],
+        "⚽ SPORTS MENU": ["FOOTBALL", "GAMES"],
+        "📥 DOWNLOAD MENU": ["NEWS", "SEARCH", "IMAGES", "DOWNLOAD"],
+        "🛠️ HEROKU MENU": ["CONTROL", "STICKCMD", "TOOLS"],
+        "💬 CONVERSATION MENU": ["CONVERSION", "LOGO", "MEDIA", "WEEB", "SCREENSHOTS", "IMG", "AUDIO-EDIT", "MPESA"],
+        "😂 FUN MENU": ["HENTAI", "FUN", "REACTION"],
+        "🌍 GENERAL MENU": ["GENERAL", "MODS", "UTILITY", "MEDIA", "TRADE"],
+        "👨‍👨‍👦‍👦 GROUP MENU": ["GROUP"],
+        "💻 BOT_INFO MENU": ["GITHUB", "USER", "PAIR"],
+        "🔞 ADULT MENU": ["XVIDEO"]
 };
 
 // GitHub repo stats
