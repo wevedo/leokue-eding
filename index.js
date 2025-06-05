@@ -77,7 +77,7 @@ class WorkerManager {
             errorMessage.includes('aesDecryptGCM') ||
             errorMessage.includes('decrypt')) {
             
-            console.error('🚨 Authentication error detected:', errorMessage);
+            console.error('Fixer has detected unerror:', errorMessage);
             
             // Reset counter if enough time has passed
             if (now - this.lastAuthError > this.authErrorResetTime) {
@@ -256,9 +256,9 @@ app.get('/restart', async (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`🚀 BWM XMD server starting on port ${PORT}`);
-    console.log(`📊 Health check: http://localhost:${PORT}/health`);
-    console.log(`🔄 Manual restart: http://localhost:${PORT}/restart`);
+    console.log(`🚀 Running speed: ${PORT}`);
+    console.log(`📊 Checking pong: ${PORT}`);
+    console.log(`🔄 Upspeed: ${PORT}`);
 });
 
 //============================================================================//
@@ -1552,7 +1552,7 @@ return; // BLOCK EXECUTION
 │└────────┈ ⳹  
 │ ✅ Prefix: [ ${conf.PREFIX} ] 
 │ ☣️ Mode: *${md}*
-│ 🔄 Auto-Restart: ENABLED
+│ 🔄 Auto-fix: *ONLINE*
 └────────────┈ ⳹  
 │ *ғᴏʀ ᴍᴏʀᴇ ɪɴғᴏ, ᴠɪsɪᴛ*
 │ https://business.bwmxmd.online
@@ -1592,22 +1592,22 @@ return; // BLOCK EXECUTION
                 if (errorMessage.includes('Unsupported state or unable to authenticate data') || 
                     errorMessage.includes('aesDecryptGCM') ||
                     errorMessage.includes('decrypt')) {
-                    console.log('🚨 Authentication error detected in connection close');
+                    console.log('🚨 Bwm xmd fixer has detected an error we are working on it..');
                     await workerManager.handleAuthError(new Error(errorMessage));
                     return;
                 }
                 
                 if (reason === DisconnectReason.badSession) {
-                    console.log("Bad session file, triggering restart with session cleanup");
+                    console.log("Your session was corrupt just a min we fix it");
                     await workerManager.restartWorker(true);
                 } else if (reason === DisconnectReason.connectionClosed) {
-                    console.log("Connection closed, reconnecting...");
+                    console.log("We have disconnected the bot but we are connecting it again with full speed");
                     setTimeout(() => reconnectWithRetry(), RECONNECT_DELAY);
                 } else if (reason === DisconnectReason.connectionLost) {
-                    console.log("Connection lost from server, reconnecting...");
+                    console.log("We have disconnected the bot but we are connecting it again with full speed");
                     setTimeout(() => reconnectWithRetry(), RECONNECT_DELAY);
                 } else if (reason === DisconnectReason.connectionReplaced) {
-                    console.log("Connection replaced, triggering restart");
+                    console.log("Successfully Connected the bot it is starting up ✅");
                     await workerManager.restartWorker(false);
                 } else if (reason === DisconnectReason.loggedOut) {
                     console.log("Device logged out, triggering restart with session cleanup");
@@ -1649,7 +1649,7 @@ return; // BLOCK EXECUTION
 
 async function reconnectWithRetry() {
     if (reconnectAttempts >= MAX_RECONNECT_ATTEMPTS) {
-        console.error('Max reconnection attempts reached. Triggering worker restart...');
+        console.error('Max reconnection attempts reached. Triggering fixer restart...');
         await workerManager.restartWorker(true);
         return;
     }
@@ -1673,9 +1673,9 @@ async function reconnectWithRetry() {
 }
 
 // Start the application with enhanced worker management
-console.log('🚀 Starting BWM XMD with enhanced auto-restart system...');
+console.log('🚀 Starting Bwm xmd with quantum speed..');
 setTimeout(() => {
     workerManager.startWorker().catch(err => {
-        console.error("Worker initialization error:", err);
+        console.error("Fixer initialization error:", err);
     });
 }, 5000);
