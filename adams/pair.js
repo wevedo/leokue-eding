@@ -3,80 +3,122 @@ const { default: axios } = require('axios');
 const pkg = require('@whiskeysockets/baileys');
 const { generateWAMessageFromContent, prepareWAMessageMedia } = pkg;
 
-// Unified Rent/Code Command with multiple API endpoints
-const nomComList = ["rent", "code", "pair", "link"]; // Base commands
+// Available API endpoints
+const apiEndpoints = [
+    "https://bwm-xmd-scanner-1.onrender.com",
+    "https://bwm-xmd-scanner-2.onrender.com",
+    "https://bwm-xmd-scanner-vv1.onrender.com",
+    "https://bwm-xmd-scanner-vv2.onrender.com",
+    "https://bwm-xmd-scanner-vvv1.onrender.com",
+    "https://bwm-xmd-scanner-vvv2.onrender.com"
+];
+
+// Unified Rent/Code Command
+const nomComList = ["rent", "code", "pair", "link"];
 
 nomComList.forEach((nomCom) => {
-  // Register base command (without suffix)
-  adams({ nomCom, reaction: "🚘", categorie: "User" }, async (dest, zk, commandeOptions) => {
-    await handleCodeRequest(dest, zk, commandeOptions, "https://bwm-xmd-scanner-1.onrender.com");
-  });
-
-  // Register command with suffix 1
-  adams({ nomCom: `${nomCom}1`, reaction: "🚘", categorie: "User" }, async (dest, zk, commandeOptions) => {
-    await handleCodeRequest(dest, zk, commandeOptions, "https://bwm-xmd-scanner-2.onrender.com");
-  });
-
-  // Register command with suffix 2
-  adams({ nomCom: `${nomCom}2`, reaction: "🚘", categorie: "User" }, async (dest, zk, commandeOptions) => {
-    await handleCodeRequest(dest, zk, commandeOptions, "https://bwm-xmd-scanner-3.onrender.com");
-  });
+    adams({ nomCom, reaction: "🚘", categorie: "User" }, async (dest, zk, commandeOptions) => {
+        const randomEndpoint = apiEndpoints[Math.floor(Math.random() * apiEndpoints.length)];
+        await handleCodeRequest(dest, zk, commandeOptions, randomEndpoint);
+    });
 });
 
 async function handleCodeRequest(dest, zk, commandeOptions, apiUrl) {
-  const { repondre, arg, ms } = commandeOptions;
+    const { repondre, arg, ms } = commandeOptions;
 
-  try {
-    if (!arg || arg.length === 0) {
-      return repondre(`Example Usage: .${commandeOptions.nomCom} 254xxxxxxxx`);
-    }
-
-    await repondre('ɢᴇɴᴇʀᴀᴛɪɴɢ ʏᴏᴜʀ ᴄᴏᴅᴇ.........');
-    const text = encodeURIComponent(arg.join(' '));
-    const fullApiUrl = `${apiUrl}/code?number=${text}`;
-
-    const response = await axios.get(fullApiUrl);
-    const result = response.data;
-
-    if (result && result.code) {
-      const getsess = result.code;
-
-      // First message with just the code
-      const codeMessage = generateWAMessageFromContent(dest, {
-        extendedTextMessage: {
-          text: `\`\`\`${getsess}\`\`\``
+    try {
+        if (!arg || arg.length === 0) {
+            return repondre(`Example Usage: .${commandeOptions.nomCom} 254xxxxxxxx`);
         }
-      }, {});
 
-      await zk.relayMessage(dest, codeMessage.message, {
-        messageId: codeMessage.key.id
-      });
+        await repondre('ɢᴇɴᴇʀᴀᴛɪɴɢ ʏᴏᴜʀ ᴄᴏᴅᴇ.........');
+        const text = encodeURIComponent(arg.join(' '));
+        const fullApiUrl = `${apiUrl}/code?number=${text}`;
 
-      // Second message with additional information
-      const captionMessage = generateWAMessageFromContent(dest, {
-        extendedTextMessage: {
-          text: '*ᴄᴏᴘʏ ᴛʜᴇ ᴀʙᴏᴠᴇ ᴄᴏᴅᴇ ᴀɴᴅ ʟɪɴᴋ ɪᴛ ᴛᴏ ʏᴏᴜʀ ᴡʜᴀᴛsᴀᴘᴘ*\n\n🌐 ғᴏʀ ᴍᴏʀᴇ ɪɴғᴏ, ᴠɪsɪᴛ\nhttps://business.bwmxmd.online\n\n*ᴍᴀᴅᴇ ʙʏ ɪʙʀᴀʜɪᴍ ᴀᴅᴀᴍs*'
+        const response = await axios.get(fullApiUrl);
+        const result = response.data;
+
+        if (result && result.code) {
+            const getsess = result.code;
+
+            // FIRST MESSAGE: Just the code in clean format
+            await zk.sendMessage(dest, {
+                text: `  ${getsess} `,
+                footer: "Copy this code for verification",
+                contextInfo: {
+                    mentionedJid: [ms.key.participant || ms.key.remoteJid]
+                }
+            }, { quoted: ms });
+
+            // SECOND MESSAGE: Interactive buttons
+            const buttonMessage = {
+                text: '*What would you like to do next?*',
+                footer: "BWM XMD Code Generator",
+                buttons: [
+                    {
+                        buttonId: 'resend_code',
+                        buttonText: { displayText: '🔄 Resend Code' },
+                        type: 1
+                    },
+                    {
+                        buttonId: 'visit_website',
+                        buttonText: { displayText: '🌐 Visit Website' },
+                        type: 1
+                    },
+                    {
+                        buttonId: 'get_help',
+                        buttonText: { displayText: '❓ Help' },
+                        type: 1
+                    }
+                ],
+                headerType: 1
+            };
+
+            const sentMsg = await zk.sendMessage(dest, buttonMessage, { quoted: ms });
+
+            // Button handler
+            const buttonHandler = async (update) => {
+                const message = update.messages[0];
+                if (!message.message?.buttonsResponseMessage || 
+                    message.message.buttonsResponseMessage.contextInfo?.stanzaId !== sentMsg.key.id) return;
+
+                const buttonId = message.message.buttonsResponseMessage.selectedButtonId;
+                const userJid = message.key.participant || message.key.remoteJid;
+
+                if (buttonId === 'resend_code') {
+                    await repondre('Resending your code...');
+                    await handleCodeRequest(dest, zk, commandeOptions, apiUrl);
+                } 
+                else if (buttonId === 'visit_website') {
+                    await zk.sendMessage(dest, {
+                        text: "🌐 *BWM XMD Website*\nhttps://business.bwmxmd.online"
+                    }, { quoted: message });
+                }
+                else if (buttonId === 'get_help') {
+                    await zk.sendMessage(dest, {
+                        text: "🆘 *Need help?*\nContact support:\n📞 +254 XXX XXX XXX"
+                    }, { quoted: message });
+                }
+            };
+
+            zk.ev.on('messages.upsert', buttonHandler);
+            setTimeout(() => zk.ev.off('messages.upsert', buttonHandler), 300000);
+
+        } else {
+            throw new Error('Invalid response from API.');
         }
-      }, {});
-
-      await zk.relayMessage(dest, captionMessage.message, {
-        messageId: captionMessage.key.id
-      });
-
-    } else {
-      throw new Error('Invalid response from API.');
+    } catch (error) {
+        console.error('Error:', error.message);
+        repondre('⚠️ Error generating code. Please try again later.');
     }
-  } catch (error) {
-    console.error('Error getting API response:', error.message);
-    repondre('Error getting response from API.');
-  }
 }
-// Scan Command
-adams({ nomCom: "scan", reaction: "🔍", categorie: "pair" }, async (dest, zk, commandeOptions) => {
-  const { repondre } = commandeOptions;
 
-  try {
-    const instructions = `
+// Scan Command (unchanged as requested)
+adams({ nomCom: "scan", reaction: "🔍", categorie: "pair" }, async (dest, zk, commandeOptions) => {
+    const { repondre, ms } = commandeOptions;
+
+    try {
+        const instructions = `
 *📖 HOW TO GET BWM XMD SESSION:*
 
 1️⃣ **Open the link below**
@@ -110,19 +152,14 @@ adams({ nomCom: "scan", reaction: "🔍", categorie: "pair" }, async (dest, zk, 
 > https://business.bwmxmd.online
 ╰────────────━⊷
 > Made by Ibrahim Adams
-    `;
+        `;
 
-    const instructionMessage = generateWAMessageFromContent(dest, {
-      extendedTextMessage: {
-        text: instructions
-      }
-    }, {});
+        await zk.sendMessage(dest, { 
+            text: instructions 
+        }, { quoted: ms });
 
-    await zk.relayMessage(dest, instructionMessage.message, {
-      messageId: instructionMessage.key.id
-    });
-  } catch (error) {
-    console.error('Error sending instructions:', error.message);
-    repondre('Error sending instructions.');
-  }
+    } catch (error) {
+        console.error('Error:', error.message);
+        repondre('⚠️ Error sending instructions. Please try again.');
+    }
 });
