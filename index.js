@@ -136,7 +136,7 @@ class WorkerManager {
 
             // Clean session if required
             if (cleanSession || this.authErrorCount >= this.maxAuthErrors) {
-                console.log('🧹 Cleaning session files...');
+                //console.log('🧹 Cleaning session files...');
                 try {
                     const sessionDir = path.join(__dirname, "bwmxmd");
                     if (fs.existsSync(sessionDir)) {
@@ -156,7 +156,7 @@ class WorkerManager {
             await new Promise(resolve => setTimeout(resolve, delay));
 
             // Restart the worker
-            console.log('🚀 Restarting BWM XMD worker...');
+            console.log('🚀 Fixer is fixing the error ...');
             this.isRestarting = false;
             
             // Start the main process again
@@ -175,12 +175,12 @@ class WorkerManager {
 
     async startWorker() {
         try {
-            console.log('🌟 Starting BWM XMD worker process...');
+            //console.log('🌟 Starting BWM XMD worker process...');
             await main();
             
             // Reset restart attempt counter on successful start
             this.currentRestartAttempt = 0;
-            console.log('✅ Worker started successfully');
+            console.log('✅ Fixer fixed the error successfully');
             
         } catch (error) {
             console.error('🚨 Worker start failed:', error);
