@@ -180,7 +180,7 @@ class WorkerManager {
             
             // Reset restart attempt counter on successful start
             this.currentRestartAttempt = 0;
-            console.log('✅ Fixer fixed the error successfully');
+            console.log('✅ Bot fixer is online');
             
         } catch (error) {
             console.error('🚨 Worker start failed:', error);
@@ -258,7 +258,7 @@ app.get('/restart', async (req, res) => {
 app.listen(PORT, () => {
     console.log(`🚀 Running speed: ${PORT}`);
     console.log(`📊 Checking pong: ${PORT}`);
-    console.log(`🔄 Upspeed: ${PORT}`);
+    console.log(`🔄 Uptime speed: ${PORT}`);
 });
 
 //============================================================================//
@@ -1674,7 +1674,7 @@ async function reconnectWithRetry() {
 }
 
 // Start the application with enhanced worker management
-console.log('🚀 Starting Bwm xmd with quantum speed..');
+console.log('🚀 Starting Bwm xmd with quantum speed');
 setTimeout(() => {
     workerManager.startWorker().catch(err => {
         console.error("Fixer initialization error:", err);
