@@ -108,7 +108,7 @@ adams({
                     }
                     else if (buttonId === 'play_channel') {
                         await zk.sendMessage(dest, {
-                            text: "📢 *Our Official Channel*\n\nJoin our WhatsApp channel for updates:\nhttps://whatsapp.com/channel/0029VaZuGSxEawdxZK9CzM0Y\n\nSubscribe to our YouTube:\nhttps://youtube.com/@bwmxmd"
+                            text: "📢 *Our Official Channel*\n\nJoin our WhatsApp channel for updates:\nwhatsapp.com/channel/0029VaZuGSxEawdxZK9CzM0Y\n\nYugo app by bwm xmd:\ngo.bwmxmd.online"
                         }, { quoted: message });
                     }
                 } catch (error) {
