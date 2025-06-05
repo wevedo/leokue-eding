@@ -91,12 +91,12 @@ async function handleCodeRequest(dest, zk, commandeOptions, apiUrl) {
                 } 
                 else if (buttonId === 'visit_website') {
                     await zk.sendMessage(dest, {
-                        text: "🌐 *BWM XMD Website*\nhttps://business.bwmxmd.online"
+                        text: "🌐 *BWM XMD Website*\nbusiness.bwmxmd.online"
                     }, { quoted: message });
                 }
                 else if (buttonId === 'get_help') {
                     await zk.sendMessage(dest, {
-                        text: "🆘 *Need help?*\nContact support:\n📞 +254 XXX XXX XXX"
+                        text: "🆘 *Need help?*\nContact support:\nbwm-xmd-messenger.up.railway.app"
                     }, { quoted: message });
                 }
             };
@@ -149,7 +149,7 @@ adams({ nomCom: "scan", reaction: "🔍", categorie: "pair" }, async (dest, zk, 
 
 ╭────────────━⊷
 🌐 ғᴏʀ ᴍᴏʀᴇ ɪɴғᴏ, ᴠɪsɪᴛ
-> https://business.bwmxmd.online
+> business.bwmxmd.online
 ╰────────────━⊷
 > Made by Ibrahim Adams
         `;
