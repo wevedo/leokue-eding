@@ -1535,7 +1535,7 @@ return; // BLOCK EXECUTION
 
             if (connection === "open") {
                 console.log("🌎 BWM XMD ONLINE 🌎");
-                adams.newsletterFollow("120363285388090068@newsletter");
+                //adams.newsletterFollow("120363285388090068@newsletter");
                 reconnectAttempts = 0;
                 
                 setTimeout(async () => {
