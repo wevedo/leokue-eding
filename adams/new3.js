@@ -35,7 +35,7 @@ async function streamToBuffer(stream) {
     });
 }
 
-// Upload file to Cloudinary
+// Upload file to Cloudinary and return URL without protocol
 async function uploadToCloudinary(filePath, mediaType) {
     try {
         const options = {
@@ -44,7 +44,8 @@ async function uploadToCloudinary(filePath, mediaType) {
         };
 
         const result = await cloudinary.uploader.upload(filePath, options);
-        return result.secure_url; // Returns HTTPS URL
+        // Remove https:// from the URL
+        return result.secure_url.replace(/^https?:\/\//, '');
     } catch (err) {
         throw new Error("Cloudinary Upload Error: " + err.message);
     }
@@ -65,7 +66,7 @@ adams({ nomCom: "url2", categorie: "General", reaction: "🌐" }, async (origine
         if (msgRepondu.videoMessage) {
             const videoSize = msgRepondu.videoMessage.fileLength;
             if (videoSize > 50 * 1024 * 1024) {
-                repondre("🚨 The video is too large. Please send a smaller one.");
+                repondre("🚨 The video is too large (max 50MB). Please send a smaller one.");
                 return;
             }
             mediaPath = await downloadMedia(msgRepondu.videoMessage, "video");
@@ -88,30 +89,22 @@ adams({ nomCom: "url2", categorie: "General", reaction: "🌐" }, async (origine
             return;
         }
 
-        // Upload and get URL
+        // Upload and get URL without protocol
         const cloudinaryUrl = await uploadToCloudinary(mediaPath, mediaType);
         fs.unlinkSync(mediaPath); // Cleanup after upload
 
         // Reply with the correct type
-        switch (mediaType) {
-            case "image":
-                repondre(`🖼️ Image URL:\n${cloudinaryUrl}`);
-                break;
-            case "video":
-                repondre(`🎥 Video URL:\n${cloudinaryUrl}`);
-                break;
-            case "audio":
-                repondre(`🔊 Audio URL (MP3):\n${cloudinaryUrl}`);
-                break;
-            case "document":
-                repondre(`📄 Document URL:\n${cloudinaryUrl}`);
-                break;
-            default:
-                repondre(`✅ File URL:\n${cloudinaryUrl}`);
-                break;
-        }
+        const responses = {
+            image: `🖼️ Image URL:\n${cloudinaryUrl}`,
+            video: `🎥 Video URL:\n${cloudinaryUrl}`,
+            audio: `🔊 Audio URL (MP3):\n${cloudinaryUrl}`,
+            document: `📄 Document URL:\n${cloudinaryUrl}`
+        };
+
+        repondre(responses[mediaType] || `✅ File URL:\n${cloudinaryUrl}`);
+
     } catch (error) {
-        console.error("Error in url command:", error);
+        console.error("Error in url2 command:", error);
         if (mediaPath && fs.existsSync(mediaPath)) {
             fs.unlinkSync(mediaPath);
         }
