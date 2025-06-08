@@ -156,8 +156,17 @@ async function handleDownload(type, videoUrl, dest, zk, originalMsg) {
         for (const api of apis) {
             try {
                 const response = await axios.get(`${api}${encodedUrl}`);
-                if (response.data?.result?.download_url || response.data?.url) {
-                    downloadUrl = response.data.result?.download_url || response.data.url;
+                if (
+    response.data?.result?.download_url || 
+    response.data?.url || 
+    response.data?.audio_url || 
+    response.data?.video_url
+) {
+    downloadUrl = 
+        response.data.result?.download_url || 
+        response.data.url || 
+        response.data.audio_url || 
+        response.data.video_url;
                     break;
                 }
             } catch (e) {
