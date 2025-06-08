@@ -1,34 +1,47 @@
 const { adams } = require("../Ibrahim/adams");
 const moment = require("moment-timezone");
-const axios = require("axios");
 const s = require(__dirname + "/../config");
+const axios = require("axios");
 const readMore = String.fromCharCode(8206).repeat(4000); 
-const PREFIX = s.PREFIX; // Get prefix from config
+const PREFIX = s.PREFIX;
 
-// GitHub raw audio links
+// Menu images
+const menuImages = [
+    "https://res.cloudinary.com/dptzpfgtm/image/upload/v1748879883/whatsapp_uploads/e3eprzkzxhwfx7pmemr5.jpg",
+    "https://res.cloudinary.com/dptzpfgtm/image/upload/v1748879901/whatsapp_uploads/hqagxk84idvf899rhpfj.jpg",
+    "https://res.cloudinary.com/dptzpfgtm/image/upload/v1748879921/whatsapp_uploads/bms318aehnllm6sfdgql.jpg"
+];
+const randomImage = () => menuImages[Math.floor(Math.random() * menuImages.length)];
+
+// Audio files
 const githubRawBaseUrl = "https://raw.githubusercontent.com/ibrahimaitech/bwm-xmd-music/master/tiktokmusic";
 const audioFiles = Array.from({ length: 100 }, (_, i) => `sound${i + 1}.mp3`);
 const getRandomAudio = () => audioFiles[Math.floor(Math.random() * audioFiles.length)];
 
-// Menu images
-const menuImages = [
-    "https://bwm-xmd-files.vercel.app/bwmxmd1.jpeg",
-    "https://bwm-xmd-files.vercel.app/bwmxmd2.jpeg",
-    "https://bwm-xmd-files.vercel.app/bwmxmd3.jpeg",
-    "https://bwm-xmd-files.vercel.app/bwmxmd4.jpeg",
-    "https://bwm-xmd-files.vercel.app/bwmxmd5.jpeg",
-];
-const randomImage = () => menuImages[Math.floor(Math.random() * menuImages.length)];
-const footer = `\n\n©Sir Ibrahim Adams\n\n╭━===========================\n┃  ᴛᴏ sᴇᴇ ᴀʟʟ ᴄᴏᴍᴍᴀɴᴅs ᴛᴏɢᴇᴛʜᴇʀ ᴜsᴇ\n┃ *${PREFIX} Cmds*\n┃ *${PREFIX} Help*\n┃ *${PREFIX} list*\n┃ *${PREFIX} Commands* \n╰━===========================\n\n*For business use this*\nhttps://business.bwmxmd.online\n\n®2025 ʙᴡᴍ xᴍᴅ 🔥`;
+const footer = `\n\n©Sir Ibrahim Adams\n\n╭━========================\n┃  ᴛᴏ sᴇᴇ ᴀʟʟ ᴄᴏᴍᴍᴀɴᴅs ᴛᴏɢᴇᴛʜᴇʀ ᴜsᴇ \n┃ *${PREFIX} Cmds*\n┃ *${PREFIX} Help*\n┃ *${PREFIX} list*\n┃ *${PREFIX} Commands* \n╰━========================\n\n*For business use this*\nbusiness.bwmxmd.online\n\n®2025 ʙᴡᴍ xᴍᴅ 🔥`;
 
-// GitHub repo stats - Updated with correct repo path
+// Command categories
+const categories = {
+    "🤖 AI MENU": ["AI", "TTS", "NEWS"],
+    "⚽ SPORTS MENU": ["FOOTBALL", "GAMES"],
+    "📥 DOWNLOAD MENU": ["NEWS", "SEARCH", "IMAGES", "DOWNLOAD"],
+    "🛠️ HEROKU MENU": ["CONTROL", "STICKCMD", "TOOLS"],
+    "💬 CONVERSATION MENU": ["CONVERSION", "LOGO", "MEDIA", "WEEB", "SCREENSHOTS", "IMG", "AUDIO-EDIT", "MPESA"],
+    "😂 FUN MENU": ["HENTAI", "FUN", "REACTION"],
+    "🌍 GENERAL MENU": ["GENERAL", "MODS", "UTILITY", "MEDIA", "TRADE"],
+    "👨‍👨‍👦‍👦 GROUP MENU": ["GROUP"],
+    "💻 BOT_INFO MENU": ["GITHUB", "USER", "PAIR"],
+    "🔞 ADULT MENU": ["XVIDEO"]
+};
+
+// GitHub repo stats
 const fetchGitHubStats = async () => {
     try {
-        const owner = "ibrahimadams254"; // Updated GitHub username
-        const repo = "BWM-XMD-QUANTUM"; // Repository name
+        const owner = "ibrahimadams254";
+        const repo = "BWM-XMD-QUANTUM";
         const response = await axios.get(`https://api.github.com/repos/${owner}/${repo}`, {
             headers: {
-                'User-Agent': 'BWM-XMD-Bot' // GitHub API requires a user-agent
+                'User-Agent': 'BWM-XMD-Bot'
             }
         });
         const forks = response.data.forks_count || 0;
@@ -36,13 +49,9 @@ const fetchGitHubStats = async () => {
         return (forks * 2) + (stars * 2);
     } catch (error) {
         console.error("Error fetching GitHub stats:", error.message);
-        return Math.floor(Math.random() * 1000) + 500; // Return a random number if API fails
+        return Math.floor(Math.random() * 1000) + 500;
     }
 };
-
-// Command list storage (ensures commands are stored only once)
-const commandList = {};
-let commandsStored = false;
 
 adams({ nomCom: "menu2", categorie: "General" }, async (dest, zk, commandeOptions) => {
     const contactName = commandeOptions?.ms?.pushName || "Unknown Contact";
@@ -61,151 +70,280 @@ adams({ nomCom: "menu2", categorie: "General" }, async (dest, zk, commandeOption
         },
     };
 
-    // Store commands only once
-    if (!commandsStored) {
-        cm.forEach((com) => {
-            const categoryUpper = com.categorie.toUpperCase();
-            if (!commandList[categoryUpper]) commandList[categoryUpper] = [];
-            commandList[categoryUpper].push(`🟢 ${com.nomCom}`);
-        });
-        commandsStored = true; // Prevents further storing
-    }
+    // Store commands
+    const commandList = {};
+    cm.forEach((com) => {
+        const categoryUpper = com.categorie.toUpperCase();
+        if (!commandList[categoryUpper]) commandList[categoryUpper] = [];
+        commandList[categoryUpper].push(`• ${com.nomCom}`);
+    });
 
+    // Get time and date
     moment.tz.setDefault(s.TZ || "Africa/Nairobi");
     const date = moment().format("DD/MM/YYYY");
     const time = moment().format("HH:mm:ss");
-    const totalUsers = await fetchGitHubStats();
-    const image = randomImage();
 
-    // Dynamic Greeting Based on Time
+    // Get GitHub stats
+    const githubStats = await fetchGitHubStats();
+
+    // Dynamic greeting
     const hour = moment().hour();
-    let greeting = "🌙 *Good Night* 😴";
-    if (hour >= 5 && hour < 12) greeting = "🌅 *Good Morning* 🤗";
-    else if (hour >= 12 && hour < 18) greeting = "☀️ *Good Afternoon* 😊";
-    else if (hour >= 18 && hour < 22) greeting = "🌆 *Good Evening* 🤠";
+    let greeting = "🌙 Good Night 😴";
+    if (hour >= 5 && hour < 12) greeting = "🌅 Good Morning 🤗";
+    else if (hour >= 12 && hour < 18) greeting = "☀️ Good Afternoon 😊";
+    else if (hour >= 18 && hour < 22) greeting = "🌆 Good Evening 🤠";
 
-    // Custom Categories with Emojis
-    const categoryGroups = {
-        "🤖 AI MENU": ["AI", "TTS", "NEWS"],
-        "⚽ SPORTS MENU": ["FOOTBALL", "GAMES"],
-        "📥 DOWNLOAD MENU": ["NEWS", "SEARCH", "IMAGES", "DOWNLOAD"],
-        "🛠️ HEROKU MENU": ["CONTROL", "STICKCMD", "TOOLS"],
-        "💬 CONVERSATION MENU": ["CONVERSION", "LOGO", "MEDIA", "WEEB", "SCREENSHOTS", "IMG", "AUDIO-EDIT", "MPESA"],
-        "😂 FUN MENU": ["HENTAI", "FUN", "REACTION"],
-        "🌍 GENERAL MENU": ["GENERAL", "MODS", "UTILITY", "MEDIA", "TRADE"],
-        "👨‍👨‍👦‍👦 GROUP MENU": ["GROUP"],
-        "💻 BOT_INFO MENU": ["GITHUB", "USER", "PAIR"],
-        "🔞 ADULT MENU": ["XVIDEO"],
+    // Context info with mentionedJid and forwarding details
+    const contextInfo = {
+        mentionedJid: [sender ? `${sender}@s.whatsapp.net` : undefined].filter(Boolean),
+        forwardingScore: 999,
+        isForwarded: true,
+        forwardedNewsletterMessageInfo: {
+            newsletterJid: "120363285388090068@newsletter",
+            newsletterName: "BWM-XMD",
+            serverMessageId: Math.floor(100000 + Math.random() * 900000),
+        },
     };
 
-    // Send Main Menu as Quote Reply with Random Image
+    // Create numbered menu options
+    const menuOptions = `
+*📋 MENU OPTIONS - Reply with number:*
+
+*3.* 🌐 OUR WEB
+*4.* 📺 YOGO APP
+*5.* 🎵 RANDOM SONG
+*6.* 📢 UPDATES
+
+*📂 COMMAND CATEGORIES - Reply with number:*
+
+*7.* 🤖 AI MENU
+*8.* ⚽ SPORTS MENU
+*9.* 📥 DOWNLOAD MENU
+*10.* 🛠️ HEROKU MENU
+*11.* 💬 CONVERSATION MENU
+*12.* 😂 FUN MENU
+*13.* 🌍 GENERAL MENU
+*14.* 👨‍👨‍👦‍👦 GROUP MENU
+*15.* 💻 BOT_INFO MENU
+*16.* 🔞 ADULT MENU
+
+_Reply with any number above to access that menu section_`;
+
+    // Send main menu
     const sentMessage = await zk.sendMessage(dest, {
-        image: { url: image },
+        image: { url: randomImage() },
         caption: `
 ┌─❖
 │ 𝐁𝐖𝐌 𝐗𝐌𝐃    
 └┬❖  
 ┌┤ ${greeting}
-│└───────────┈⳹  
+│└────────┈⳹  
 │🕵️ ᴜsᴇʀ ɴᴀᴍᴇ: ${contactName}
 │📅 ᴅᴀᴛᴇ: ${date}
-│⏰ ᴛɪᴍᴇ: ${time}
-│👥 ʙᴡᴍ ᴜsᴇʀs: ${totalUsers}        
-└────────────────┈⳹ 
+│⏰ ᴛɪᴍᴇ: ${time}       
+│⭐ ʙᴡᴍ xᴍᴅ ᴜsᴇʀs: ${githubStats}       
+└─────────────┈⳹ 
 
 > ©Ibrahim Adams
 
 ${readMore}
 
-📜 *ʀᴇᴘʟʏ ᴀ ᴄᴀᴛᴇɢᴏʀʏ ᴡɪᴛʜ ɪᴛs ɴᴜᴍʙᴇʀ*  
+${menuOptions}
 
-${Object.keys(categoryGroups).map((cat, index) => `${index + 1} ${cat}`).join("\n\n")}${footer}
-`,
-        contextInfo: {
-            mentionedJid: [sender ? `${sender}@s.whatsapp.net` : undefined].filter(Boolean),
-            forwardingScore: 999,
-            isForwarded: true,
-            forwardedNewsletterMessageInfo: {
-                newsletterJid: "120363285388090068@newsletter",
-                newsletterName: "BWM-XMD",
-                serverMessageId: Math.floor(100000 + Math.random() * 900000),
-            },
-        },
+${footer}`,
+        contextInfo: contextInfo
     }, { quoted: contactMsg });
 
-    // **Category Selection Listener**
-    zk.ev.on("messages.upsert", async (update) => {
+    // Handle replies to this message
+    const cleanup = () => {
+        zk.ev.off("messages.upsert", handleReply);
+    };
+
+    const handleReply = async (update) => {
         const message = update.messages[0];
-        if (!message.message || !message.message.extendedTextMessage) return;
+        if (!message?.message) return;
 
-        const responseText = message.message.extendedTextMessage.text.trim();
-        if (
-            message.message.extendedTextMessage.contextInfo &&
-            message.message.extendedTextMessage.contextInfo.stanzaId === sentMessage.key.id
-        ) {
-            const selectedIndex = parseInt(responseText);
-            const categoryKeys = Object.keys(categoryGroups);
+        // Check if this is a reply to our menu message
+        const isReply = message.message.extendedTextMessage?.contextInfo?.stanzaId === sentMessage.key.id;
+        if (!isReply) return;
 
-            if (isNaN(selectedIndex) || selectedIndex < 1 || selectedIndex > categoryKeys.length) {
-                return repondre("*❌ Invalid number. Please select a valid category.*", { quoted: contactMsg });
+        const responseText = message.message.extendedTextMessage?.text?.trim() || 
+                           message.message.conversation?.trim();
+        
+        if (!responseText) return;
+
+        const selectedIndex = parseInt(responseText);
+        const dest = message.key.remoteJid;
+
+        try {
+            switch (selectedIndex) {
+                case 1:
+                    // INBOX MENU - Show all commands
+                    const categoryKeys = Object.keys(categories);
+                    let allMenuText = "*📋 INBOX MENU - All Commands*\n\n";
+                    
+                    categoryKeys.forEach((catName, index) => {
+                        allMenuText += `*${index + 1}. ${catName}*\n`;
+                        const catKeys = categories[catName] || [];
+                        catKeys.forEach(key => {
+                            if (commandList[key]) {
+                                commandList[key].forEach(cmd => {
+                                    allMenuText += `   ${cmd}\n`;
+                                });
+                            }
+                        });
+                        allMenuText += "\n";
+                    });
+
+                    await zk.sendMessage(dest, {
+                        text: allMenuText + footer,
+                        contextInfo: contextInfo
+                    }, { quoted: message });
+                    break;
+
+                case 2:
+                    // GROUP MENU - Show category selection
+                    let groupMenuText = "*🗂️ GROUP MENU - Select Category*\n\n";
+                    Object.keys(categories).forEach((catName, index) => {
+                        groupMenuText += `*${index + 17}.* ${catName}\n`;
+                    });
+                    
+                    groupMenuText += "\n_Reply with the number to see commands in that category_\n\n";
+                    await zk.sendMessage(dest, {
+                        text: groupMenuText + footer,
+                        contextInfo: contextInfo
+                    }, { quoted: message });
+                    break;
+
+                case 3:
+                    // WEB APP
+                    await zk.sendMessage(dest, {
+                        text: "🌐 *BWM XMD WEB APP*\n\nVisit our official website here:\nwww.ibrahimadams.site\n\n" + footer,
+                        contextInfo: contextInfo
+                    }, { quoted: message });
+                    break;
+
+                case 4:
+                    // YOGO APP
+                    await zk.sendMessage(dest, {
+                        text: "📺 *BWM XMD YOUTUBE*\n\nCheck out our yugo app:\nbwm-xmd-go.vercel.app\n\n" + footer,
+                        contextInfo: contextInfo
+                    }, { quoted: message });
+                    break;
+
+                case 5:
+                    // RANDOM SONG
+                    const randomAudio = getRandomAudio();
+                    await zk.sendMessage(dest, {
+                        audio: { url: `${githubRawBaseUrl}/${randomAudio}` },
+                        mimetype: 'audio/mp4',
+                        ptt: true,
+                        contextInfo: contextInfo
+                    }, { quoted: message });
+                    break;
+
+                case 6:
+                    // UPDATES
+                    await zk.sendMessage(dest, {
+                        text: "📢 *BWM XMD UPDATES CHANNEL*\n\nJoin our official updates channel:\nwhatsapp.com/channel/0029VaZuGSxEawdxZK9CzM0Y\n\n" + footer,
+                        contextInfo: contextInfo
+                    }, { quoted: message });
+                    break;
+
+                case 7:
+                case 8:
+                case 9:
+                case 10:
+                case 11:
+                case 12:
+                case 13:
+                case 14:
+                case 15:
+                case 16:
+                    // Category menus (7-16)
+                    const catIndex = selectedIndex - 7;
+                    const categoryNames = Object.keys(categories);
+                    const categoryName = categoryNames[catIndex];
+                    
+                    if (categoryName) {
+                        const catKeys = categories[categoryName] || [];
+                        let commands = [];
+                        catKeys.forEach(key => {
+                            if (commandList[key]) {
+                                commands = commands.concat(commandList[key]);
+                            }
+                        });
+
+                        if (commands.length > 0) {
+                            await zk.sendMessage(dest, {
+                                text: `📋 *${categoryName} COMMANDS*\n\n${commands.join('\n')}\n\n${footer}`,
+                                contextInfo: contextInfo
+                            }, { quoted: message });
+                        } else {
+                            await zk.sendMessage(dest, {
+                                text: `❌ No commands found for ${categoryName}\n\n${footer}`,
+                                contextInfo: contextInfo
+                            }, { quoted: message });
+                        }
+                    }
+                    break;
+
+                default:
+                    // Handle numbers 17+ for group menu categories
+                    if (selectedIndex >= 17) {
+                        const groupCatIndex = selectedIndex - 17;
+                        const categoryNames = Object.keys(categories);
+                        const categoryName = categoryNames[groupCatIndex];
+                        
+                        if (categoryName) {
+                            const catKeys = categories[categoryName] || [];
+                            let commands = [];
+                            catKeys.forEach(key => {
+                                if (commandList[key]) {
+                                    commands = commands.concat(commandList[key]);
+                                }
+                            });
+
+                            if (commands.length > 0) {
+                                await zk.sendMessage(dest, {
+                                    text: `📋 *${categoryName} COMMANDS*\n\n${commands.join('\n')}\n\n${footer}`,
+                                    contextInfo: contextInfo
+                                }, { quoted: message });
+                            } else {
+                                await zk.sendMessage(dest, {
+                                    text: `❌ No commands found for ${categoryName}\n\n${footer}`,
+                                    contextInfo: contextInfo
+                                }, { quoted: message });
+                            }
+                        } else {
+                            await zk.sendMessage(dest, {
+                                text: "*❌ Invalid number. Please select a valid option.*\n\n" + footer,
+                                contextInfo: contextInfo
+                            }, { quoted: message });
+                        }
+                    } else {
+                        await zk.sendMessage(dest, {
+                            text: "*❌ Invalid number. Please select a valid option.*\n\n" + footer,
+                            contextInfo: contextInfo
+                        }, { quoted: message });
+                    }
+                    break;
             }
-
-            const selectedCategory = categoryKeys[selectedIndex - 1];
-            const combinedCommands = categoryGroups[selectedCategory].flatMap((cat) => commandList[cat] || []);
-            const categoryImage = randomImage(); // Random image for category selection
-
-            // Display All Commands in Selected Category
+        } catch (error) {
+            console.error("Menu reply error:", error);
             await zk.sendMessage(dest, {
-                image: { url: categoryImage },
-                caption: combinedCommands.length
-                    ? `
-┌─❖ 
-│ *${selectedCategory}*:
-└┬❖
-┌┤
- ${combinedCommands.join("\n\n")}\n└───────────┈⳹\n\n${footer}`
-                    : `⚠️ No commands found for ${selectedCategory}.`,
-                contextInfo: {
-                    mentionedJid: [sender ? `${sender}@s.whatsapp.net` : undefined].filter(Boolean),
-                    forwardingScore: 999,
-                    isForwarded: true,
-                    forwardedNewsletterMessageInfo: {
-                        newsletterJid: "120363285388090068@newsletter",
-                        newsletterName: "BWM-XMD",
-                        serverMessageId: Math.floor(100000 + Math.random() * 900000),
-                    },
-                },
-            }, { quoted: contactMsg });
+                text: "*❌ An error occurred. Please try again.*\n\n" + footer,
+                contextInfo: contextInfo
+            }, { quoted: message });
         }
-    });
 
-    // Send Random Audio
-    const audioUrl = `${githubRawBaseUrl}/${getRandomAudio()}`;
-    await zk.sendMessage(dest, {
-        audio: { url: audioUrl },
-        mimetype: "audio/mpeg",
-        ptt: true,
-        contextInfo: {
-            mentionedJid: [sender ? `${sender}@s.whatsapp.net` : undefined].filter(Boolean),
-            forwardingScore: 999,
-            isForwarded: true,
-            forwardedNewsletterMessageInfo: {
-                newsletterJid: "120363285388090068@newsletter",
-                newsletterName: "BWM-XMD",
-                serverMessageId: Math.floor(100000 + Math.random() * 900000),
-            },
-        },
-    }, { 
-        quoted: {
-            key: {
-                remoteJid: ms.key.remoteJid,
-                fromMe: ms.key.fromMe,
-                id: ms.key.id,
-                participant: ms.key.participant
-            },
-            message: {
-                conversation: "🚀 𝐐𝐔𝐀𝐍𝐓𝐔𝐌 𝐕𝐄𝐑𝐒𝐈𝐎𝐍 🚀"
-            }
-        }
-    });
+        // Clean up after 5 minutes
+        setTimeout(cleanup, 300000);
+    };
+
+    // Listen for replies
+    zk.ev.on("messages.upsert", handleReply);
+
+    // Auto cleanup after 5 minutes
+    setTimeout(cleanup, 300000);
 });
