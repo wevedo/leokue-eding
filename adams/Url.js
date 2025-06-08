@@ -30,7 +30,7 @@ async function streamToBuffer(stream) {
     });
 }
 
-// Upload file to Catbox
+// Upload file to Catbox and return URL without https://
 async function uploadToCatbox(filePath) {
     if (!fs.existsSync(filePath)) {
         throw new Error("File does not exist");
@@ -38,7 +38,8 @@ async function uploadToCatbox(filePath) {
 
     try {
         const response = await catbox.uploadFile({ path: filePath });
-        return response || "Upload failed";
+        // Remove https:// from the URL if present
+        return response ? response.replace(/^https?:\/\//, '') : "Upload failed";
     } catch (err) {
         throw new Error("Upload Error: " + err);
     }
@@ -71,7 +72,7 @@ adams({ nomCom: "url", categorie: "General", reaction: "🌐" }, async (origineM
 
         } else if (msgRepondu.audioMessage) {
             mediaPath = await downloadMedia(msgRepondu.audioMessage, "audio");
-            mediaType = "audio"; // Always MP3 now
+            mediaType = "audio";
 
         } else if (msgRepondu.documentMessage) {
             mediaPath = await downloadMedia(msgRepondu.documentMessage, "document");
@@ -82,26 +83,26 @@ adams({ nomCom: "url", categorie: "General", reaction: "🌐" }, async (origineM
             return;
         }
 
-        // Upload and get URL
+        // Upload and get URL without https://
         const catboxUrl = await uploadToCatbox(mediaPath);
         fs.unlinkSync(mediaPath); // Cleanup after upload
 
         // Reply with the correct type
         switch (mediaType) {
             case "image":
-                repondre(`🖼️ Image URL:\n${catboxUrl}`);
+                repondre(`🖼 Image URL:\n${catboxUrl}`);
                 break;
             case "video":
-                repondre(`🎥 Video URL:\n${catboxUrl}`);
+                repondre(`🎬 Video URL:\n${catboxUrl}`);
                 break;
             case "audio":
-                repondre(`🔊 Audio URL (MP3):\n${catboxUrl}`);
+                repondre(`🔉 Audio URL (MP3):\n${catboxUrl}`);
                 break;
             case "document":
-                repondre(`📄 Document URL:\n${catboxUrl}`);
+                repondre(`📃 Document URL:\n${catboxUrl}`);
                 break;
             default:
-                repondre(`✅ File URL:\n${catboxUrl}`);
+                repondre(`📎 File URL:\n${catboxUrl}`);
                 break;
         }
     } catch (error) {
