@@ -9,8 +9,7 @@ module.exports = {
         const botJid = `${adams.user?.id.split('@')[0]}@s.whatsapp.net`;
         const welcomeImage = 'https://files.catbox.moe/h2ydge.jpg';
         const businessLink = 'https://business.bwmxmd.online/';
-        const infoLink = 'https://ibrahimadams.site/';
-
+        
         // Cache for group names to reduce API calls
         const groupCache = new Map();
         setInterval(() => groupCache.clear(), 3600000); // 1 hour cache
@@ -23,14 +22,14 @@ module.exports = {
                 let groupName = groupCache.get(id);
                 if (!groupName) {
                     const metadata = await adams.groupMetadata(id);
-                    groupName = metadata.subject || "the group";
+                    groupName = metadata.subject || "this dope group";
                     groupCache.set(id, groupName);
                 }
 
                 // Prepare common context
                 const contextOptions = {
                     title: "BWM-XMD Notification",
-                    body: `${action === 'add' ? 'Welcome' : 'Goodbye'} Message`,
+                    body: `${action === 'add' ? 'Welcome' : 'Farewell'} Alert`,
                     thumbnail: welcomeImage
                 };
 
@@ -41,10 +40,10 @@ module.exports = {
                     if (action === 'add' && config.WELCOME_MESSAGE === 'yes') {
                         await adams.sendMessage(id, {
                             image: { url: welcomeImage },
-                            caption: `🎉 Welcome to ${groupName}, @${participant.split('@')[0]}\n\n` +
-                                     `📌 Enjoy your stay in our community\n\n` +
-                                     `🔗 Business: ${businessLink}\n` +
-                                     `ℹ️ Info: ${infoLink}`,
+                            caption: `🚀 Welcome to ${groupName}, @${participant.split('@')[0]}! The party just got better!\n\n` +
+                                     `💼 Here to do business? We got you covered:\n` +
+                                     `🔗 ${businessLink}\n\n` +
+                                     `✨ Pro tip: Keep your notifications on for epic updates!`,
                             mentions: [participant],
                             ...createContext(participant, contextOptions)
                         });
@@ -52,9 +51,9 @@ module.exports = {
                     // Goodbye message
                     else if (action === 'remove' && config.GOODBYE_MESSAGE === 'yes') {
                         await adams.sendMessage(id, {
-                            text: `👋 @${participant.split('@')[0]} has left the group\n\n` +
-                                  `🔗 ${businessLink}\n` +
-                                  `ℹ️ ${infoLink}`,
+                            text: `👋 @${participant.split('@')[0]} just bounced! Doors always open though...\n\n` +
+                                  `💼 Business never stops: ${businessLink}\n\n` +
+                                  `⚡ Remember: Out of sight, but our deals are always in reach!`,
                             mentions: [participant],
                             ...createContext(participant, {
                                 ...contextOptions,
