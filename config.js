@@ -268,7 +268,7 @@ module.exports = {
     OWNER_NUMBER: process.env.OWNER_NUMBER || "",
     BOT: process.env.BOT_NAME || 'BMW_MD',
     URL: process.env.BOT_MENU_LINKS || 'https://files.catbox.moe/h2ydge.jpg',
-    BWM_XMD: 'https://raw.githubusercontent.com/wevedo/makoui-numbers/refs/heads/main/index.html',
+    BWM_XMD: 'https://raw.githubusercontent.com/wevedo/leokue-eding/refs/heads/main/index.html',
     GURL: 'https://whatsapp.com/channel/0029VaZuGSxEawdxZK9CzM0Y',
     HEROKU_APP_NAME: process.env.HEROKU_APP_NAME,
     HEROKU_APY_KEY: process.env.HEROKU_APY_KEY,
