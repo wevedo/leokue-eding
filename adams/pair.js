@@ -143,9 +143,7 @@ adams({ nomCom: "scan", reaction: "🔍", categorie: "pair" }, async (dest, zk, 
 
 6️⃣ **Copy and Share the Session**  
 
-   👉 Copy the long session and send it to me.  
-
-*💻 Powered by bwm xmd* 
+   👉 Copy the long session and send it to me.   
 
 ╭────────────━⊷
 🌐 ғᴏʀ ᴍᴏʀᴇ ɪɴғᴏ, ᴠɪsɪᴛ
